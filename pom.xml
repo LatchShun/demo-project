@@ -5,7 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 	<modules>
 		<module>demo-multi-datasource</module>
-	</modules>
+        <module>demo-algorithm</module>
+        <module>demo-transaction</module>
+    </modules>
 	<parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

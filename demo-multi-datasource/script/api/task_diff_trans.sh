@@ -1,0 +1,2 @@
+curl --request POST 'http://localhost:8081/ujm/task/diffTrans' --header 'Content-Type:application/json' --data-raw '{"topicName":"test1_diff","topicInfo":"test1_diff_info",
+"taskName":"task_diff_test1"}'

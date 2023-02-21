@@ -75,5 +75,6 @@
         </javaClientGenerator>
 
         <table tableName="ujm_topic" delimitIdentifiers="true" delimitAllColumns="true"/>
+        <table tableName="ujm_task_basic_info" delimitIdentifiers="true" delimitAllColumns="true"/>
     </context>
 </generatorConfiguration>
