@@ -1,8 +1,6 @@
 package indi.latch.algorithm.interview;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,10 +17,10 @@ public class InterviewDemo {
     public static void main(String[] args) {
         InterviewDemo interviewDemo = new InterviewDemo();
         List<Integer> list = IntStream.range(1, 8).boxed().collect(Collectors.toList());
-        TreeNode root = interviewDemo.buildBinaryTree(list);
+        //TreeNode root = interviewDemo.buildBinaryTree(list);
 
         TreeNode treeNode = interviewDemo.buildTestCase();
-        System.out.println(interviewDemo.process(treeNode));
+        System.out.println(interviewDemo.levelTraverse(treeNode));
     }
 
     private TreeNode buildTestCase() {
@@ -33,6 +31,29 @@ public class InterviewDemo {
         TreeNode node3 = new TreeNode(3, node6, node7);
         TreeNode node2 = new TreeNode(2, node4, node5);
         return new TreeNode(1, node2, node3);
+    }
+
+    private List<Integer> levelTraverse(TreeNode node) {
+        if (Objects.isNull(node)) {
+            return Collections.emptyList();
+        }
+        List<Integer> result = new ArrayList<>();
+        Queue<TreeNode> treeQueue = new ArrayDeque<>();
+        treeQueue.add(node);
+        while(!treeQueue.isEmpty()) {
+            TreeNode pollNode = treeQueue.poll();
+            result.add(pollNode.getVal());
+
+            if (Objects.nonNull(pollNode.getLeft())) {
+                treeQueue.add(pollNode.getLeft());
+            }
+
+            if (Objects.nonNull(pollNode.getRight())) {
+                treeQueue.add(pollNode.getRight());
+            }
+        }
+
+        return result;
     }
 
     private TreeNode buildBinaryTree(List<Integer> list) {
@@ -54,35 +75,6 @@ public class InterviewDemo {
         }
 
         return nodes.get(0);
-    }
-
-    private List<Integer> process(TreeNode node) {
-        if (node == null) {
-            return Collections.emptyList();
-        }
-
-        List<TreeNode> treeNodeList = buildTreeNodes(node);
-        return treeNodeList.stream().map(treeNode -> treeNode.getVal()).collect(Collectors.toList());
-    }
-
-    private List<TreeNode> buildTreeNodes(TreeNode node) {
-        if (node == null) {
-            return Collections.emptyList();
-        }
-
-        List<TreeNode> nodes = new ArrayList<>();
-        nodes.add(node);
-        while (node.getLeft() != null || node.getRight() != null) {
-            if (node.getLeft() != null) {
-                nodes.add(node.getLeft());
-            }
-            if (node.getRight() != null) {
-                nodes.add(node.getRight());
-            }
-
-        }
-
-        return nodes;
     }
 
     public static class TreeNode {
