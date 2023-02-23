@@ -18,39 +18,100 @@ public class TreeTraverseDemo {
         TreeTraverseDemo treeTraverseDemo = new TreeTraverseDemo();
 
         List<Integer> numbers = IntStream.range(1, 8).boxed().collect(Collectors.toList());
-        TreeNode root = treeTraverseDemo.buildTreeNode(numbers, 0);
 
-        System.out.println("先序遍历：" + treeTraverseDemo.preTraverse(root));
-        System.out.println("中序遍历：" + treeTraverseDemo.midTraverse(root));
-        System.out.println("后序遍历：" + treeTraverseDemo.postTraverse(root));
-        System.out.println("层序遍历：" + treeTraverseDemo.levelTraverse(root));
+        System.out.println("2023-02-23：");
+        TreeNode root1 = treeTraverseDemo.buildTreeNode(numbers, 0);
+        System.out.println("先序遍历：" + treeTraverseDemo.preTraverse(root1));
+        System.out.println("中序遍历：" + treeTraverseDemo.midTraverse(root1));
+        System.out.println("后序遍历：" + treeTraverseDemo.postTraverse(root1));
+        System.out.println("层序遍历：" + treeTraverseDemo.levelTraverse(root1));
+
+        System.out.println("2023-02-24：");
+        TreeNode root2 = treeTraverseDemo.buildTreeNodeV2(numbers, 0);
+        System.out.println("先序遍历：" + treeTraverseDemo.preTraverseV2(root2));
+        System.out.println("中序遍历：" + treeTraverseDemo.midTraverseV2(root2));
+        System.out.println("后序遍历：" + treeTraverseDemo.postTraverseV2(root2));
+        System.out.println("层序遍历：" + treeTraverseDemo.levelTraverseV2(root2));
     }
 
-    private TreeNode buildTreeNode(List<Integer> numbers) {
-        if (numbers.size() == 0 || Objects.isNull(numbers)) {
+    private List<Integer> levelTraverseV2(TreeNode node) {
+        if (Objects.isNull(node)) {
+            return Collections.emptyList();
+        }
+
+        List<Integer> result = new ArrayList<>();
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(node);
+
+        while (!queue.isEmpty()) {
+            TreeNode pollNode = queue.poll();
+            result.add(pollNode.getVal());
+
+            if (Objects.nonNull(pollNode.getLeft())) {
+                queue.add(pollNode.getLeft());
+            }
+
+            if (Objects.nonNull(pollNode.getRight())) {
+                queue.add(pollNode.getRight());
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> postTraverseV2(TreeNode node) {
+        return Collections.emptyList();
+    }
+
+    private List<Integer> midTraverseV2(TreeNode node) {
+        Stack<TreeNode> stack = new Stack<>();
+
+        List<Integer> result = new ArrayList<>();
+        while (!stack.isEmpty() || Objects.nonNull(node)) {
+            while (Objects.nonNull(node)) {
+                stack.add(node);
+                node = node.getLeft();
+            }
+
+            TreeNode popNode = stack.pop();
+            result.add(popNode.getVal());
+
+            if (Objects.nonNull(popNode.getRight())) {
+                node = popNode.getRight();
+            }
+        }
+
+        return result;
+    }
+
+    private TreeNode buildTreeNodeV2(List<Integer> numbers, int start) {
+        if (numbers == null || numbers.size() == 0 || start >= numbers.size()) {
             return null;
         }
 
-        List<TreeNode> nodeList = new ArrayList<>();
-        for (int i = 0; i < numbers.size(); i++) {
-            TreeNode node = new TreeNode(numbers.get(i));
-            nodeList.add(node);
-        }
+        TreeNode root = new TreeNode(numbers.get(start));
+        root.setLeft(buildTreeNodeV2(numbers, 2 * start + 1));
+        root.setRight(buildTreeNodeV2(numbers, 2 * start + 2));
+        return root;
+    }
 
-        for (int i = 0; i < nodeList.size(); i++) {
-            if ((2 * i + 1) < (nodeList.size() - 1)) {
-                nodeList.get(i).setLeft(nodeList.get(2 * i + 1));
+    private List<Integer> preTraverseV2(TreeNode node) {
+        Stack<TreeNode> queue = new Stack<>();
+        List<Integer> result = new ArrayList<>();
+        while (!queue.isEmpty() || Objects.nonNull(node)) {
+            while (Objects.nonNull(node)) {
+                result.add(node.getVal());
+                queue.add(node);
+                node = node.getLeft();
             }
-            if ((2 * i + 2) < (nodeList.size() - 1)) {
-                nodeList.get(i).setRight(nodeList.get(2 * i + 2));
-            }
-        }
 
-        return nodeList.get(0);
+            TreeNode popNode = queue.pop();
+            node = popNode.getRight();
+        }
+        return result;
     }
 
     private TreeNode buildTreeNode(List<Integer> numbers, int start) {
-        if (Objects.isNull(numbers) || numbers.size() == 0  || start > (numbers.size() - 1)) {
+        if (Objects.isNull(numbers) || numbers.size() == 0 || start > (numbers.size() - 1)) {
             return null;
         }
 
@@ -67,10 +128,9 @@ public class TreeTraverseDemo {
     }
 
     /**
-     *
-                    1
-            2               3
-        4       5       6       7
+     * 1
+     * 2               3
+     * 4       5       6       7
      */
     private List<Integer> preTraverse(TreeNode node) {
         if (Objects.isNull(node)) {
@@ -115,7 +175,25 @@ public class TreeTraverseDemo {
     }
 
     private List<Integer> postTraverse(TreeNode node) {
-        return Collections.emptyList();
+        List<Integer> result = new ArrayList<>();
+
+        TreeNode prev = null;
+        Stack<TreeNode> stack = new Stack<>();
+        while (Objects.nonNull(node) || !stack.isEmpty()) {
+            while (Objects.nonNull(node)) {
+                stack.add(node);
+                node = node.getLeft();
+            }
+
+            TreeNode popNode = stack.pop();
+            if (Objects.nonNull(popNode.getRight())) {
+                stack.add(popNode);
+                node = popNode.getRight();
+            } else {
+                result.add(popNode.getVal());
+            }
+        }
+        return result;
     }
 
     private List<Integer> levelTraverse(TreeNode node) {
@@ -151,12 +229,6 @@ public class TreeTraverseDemo {
 
         public TreeNode(int val) {
             this.val = val;
-        }
-
-        public TreeNode(int val, TreeNode left, TreeNode right) {
-            this.val = val;
-            this.left = left;
-            this.right = right;
         }
 
         public int getVal() {
