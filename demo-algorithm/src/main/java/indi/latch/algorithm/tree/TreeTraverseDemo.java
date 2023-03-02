@@ -46,6 +46,116 @@ public class TreeTraverseDemo {
         System.out.println("中序遍历：" + treeTraverseDemo.midTraverseV4(root4));
         System.out.println("后序遍历：" + treeTraverseDemo.postTraverseV4(root4));
         System.out.println("层序遍历：" + treeTraverseDemo.levelTraverseV4(root4));
+
+        System.out.println("2023-02-27：");
+        TreeNode root5 = treeTraverseDemo.buildTreeNodeV5(numbers, 0);
+        System.out.println("先序遍历：" + treeTraverseDemo.preTraverseV5(root5));
+        System.out.println("中序遍历：" + treeTraverseDemo.midTraverseV5(root5));
+        System.out.println("后序遍历：" + treeTraverseDemo.postTraverseV5(root5));
+        System.out.println("层序遍历：" + treeTraverseDemo.levelTraverseV5(root5));
+    }
+
+    private List<Integer> levelTraverseV5(TreeNode node) {
+        if (Objects.isNull(node)) {
+            return Collections.emptyList();
+        }
+
+        List<Integer> result = new ArrayList<>();
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.add(node);
+
+        while (!queue.isEmpty()) {
+            TreeNode pollNode = queue.poll();
+            result.add(pollNode.getVal());
+
+            if (Objects.nonNull(pollNode.getLeft())) {
+                queue.add(pollNode.getLeft());
+            }
+
+            if (Objects.nonNull(pollNode.getRight())) {
+                queue.add(pollNode.getRight());
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> postTraverseV5(TreeNode node) {
+        List<Integer> result = new ArrayList<>();
+
+        TreeNode prev = null;
+        Stack<TreeNode> stack = new Stack<>();
+
+        while (!stack.isEmpty() || Objects.nonNull(node)) {
+            while (Objects.nonNull(node)) {
+                stack.push(node);
+                node = node.getLeft();
+            }
+
+            TreeNode peekNode = stack.peek();
+            if (Objects.isNull(peekNode.getRight()) || prev == peekNode.getRight()) {
+                result.add(peekNode.getVal());
+                stack.pop();
+                node = null;
+                prev = peekNode;
+            } else {
+                node = peekNode.getRight();
+                prev = peekNode.getRight();
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> midTraverseV5(TreeNode node) {
+        List<Integer> result = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        while (!stack.isEmpty() || Objects.nonNull(node)) {
+            while (Objects.nonNull(node)) {
+                stack.push(node);
+                node = node.getLeft();
+            }
+
+            TreeNode popNode = stack.pop();
+            result.add(popNode.getVal());
+
+            if (Objects.nonNull(popNode.getRight())) {
+                node = popNode.getRight();
+            }
+        }
+
+        return result;
+    }
+
+    private List<Integer> preTraverseV5(TreeNode node) {
+        List<Integer> result = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+
+        while (!stack.isEmpty() || Objects.nonNull(node)) {
+            while (Objects.nonNull(node)) {
+                result.add(node.getVal());
+                stack.push(node);
+
+                node = node.getLeft();
+            }
+
+            TreeNode popNode = stack.pop();
+            if (Objects.nonNull(popNode.getRight())) {
+                node = popNode.getRight();
+            }
+        }
+
+        return result;
+    }
+
+    private TreeNode buildTreeNodeV5(List<Integer> numbers, int i) {
+        TreeNode root = new TreeNode(numbers.get(i));
+        if ((2 * i + 1) <= numbers.size() - 1) {
+            root.setLeft(buildTreeNodeV5(numbers, 2 * i + 1));
+        }
+
+        if ((2 * i + 2) <= numbers.size() - 1) {
+            root.setRight(buildTreeNodeV5(numbers, 2 * i + 2));
+        }
+        return root;
     }
 
     private List<Integer> levelTraverseV4(TreeNode node) {
